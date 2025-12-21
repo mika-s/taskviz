@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<htmx-spring-boot-thymeleaf.version>5.0.0</htmx-spring-boot-thymeleaf.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -41,7 +42,7 @@
 		<dependency>
 			<groupId>io.github.wimdeblauwe</groupId>
 			<artifactId>htmx-spring-boot-thymeleaf</artifactId>
-			<version>5.0.0</version>
+			<version>${htmx-spring-boot-thymeleaf.version}</version>
 		</dependency>
 
 		<dependency>
