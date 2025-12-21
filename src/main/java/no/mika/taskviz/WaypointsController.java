@@ -14,6 +14,8 @@ public class WaypointsController {
 
     @PostMapping(path = "/astext")
     public List<Waypoint> asText(@ModelAttribute("data") final String data, final Model model) {
-        return WaypointParser.parse(data);
+        return WaypointParser
+                .parse(data)
+                .waypoints();
     }
 }
