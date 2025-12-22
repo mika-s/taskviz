@@ -6,11 +6,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.joining;
+import static no.mika.taskviz.util.Collectors.zipWithIndex;
+
 public class WaypointParser {
 
     public static WaypointParseResult parse(final String raw) {
-        // XCTSK:{"taskType":"CLASSIC","version":2,"t":[{"n":"WPT 1","z":"cmfa@cvioJyW_X"},{"n":"WPT 2","z":"svz_@cvioJiL_X"}]}
-
         if (!raw.startsWith("XCTSK:")) {
             return WaypointParseResult.failure();
         }
@@ -20,15 +21,23 @@ public class WaypointParser {
         try {
             final TaskDefinitionFormatV2 taskDefinition = taskDefinition(cleanedForParsing);
 
-            return WaypointParseResult.success(
+            final List<LatLonAltRadius> coordinates = PolylineAlgorithm.decodeToDecimalDegrees(
                     taskDefinition.turnpoints
                             .stream()
+                            .map(turnpoint -> turnpoint.coordinates)
+                            .collect(joining(""))
+            );
+
+            return WaypointParseResult.success(
+                    zipWithIndex(taskDefinition.turnpoints.stream())
                             .map(
-                                    turnpoint -> new Waypoint(
-                                            turnpoint.name,
-                                            51.508, -0.11
-                                            //turnpoint.coordinates
-                                    )
+                                    turnpointAndIndex -> turnpointAndIndex
+                                            .map((turnpoint, index) ->
+                                                    new Waypoint(
+                                                            turnpoint.name,
+                                                            coordinates.get(index)
+                                                    )
+                                            )
                             )
                             .toList()
             );

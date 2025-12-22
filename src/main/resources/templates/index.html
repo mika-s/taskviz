@@ -70,7 +70,7 @@
                 color: 'red',
                 fillColor: '#f03',
                 fillOpacity: 0.5,
-                radius: 500
+                radius: wpt.radius
             }).addTo(map);
             wptCircle.bindPopup(wpt.name);
 
@@ -78,6 +78,10 @@
         }
 
         const polyline = L.polyline(latlngs, {color: 'blue'}).addTo(map);
+
+        if (waypoints.length > 0) {
+            map.setView([waypoints[0].lat, waypoints[0].lon], 13);
+        }
     }
 </script>
 

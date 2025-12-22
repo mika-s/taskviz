@@ -7,11 +7,16 @@ public class Waypoint {
     public final String name;
     public final double lat;
     public final double lon;
+    public final double altitude;
+    public final double radius;
 
-    public Waypoint(final String name, double lat, double lon) {
+    public Waypoint(final String name, final LatLonAltRadius latLonAltRadius) {
         this.name = requireNonNull(name);
-        this.lat = lat;
-        this.lon = lon;
+        requireNonNull(latLonAltRadius);
+        this.lat = latLonAltRadius.lat();
+        this.lon = latLonAltRadius.lon();
+        this.altitude = latLonAltRadius.altitude();
+        this.radius = latLonAltRadius.radius();
     }
 
     public String name() {
@@ -26,12 +31,22 @@ public class Waypoint {
         return lon;
     }
 
+    public double altitude() {
+        return altitude;
+    }
+
+    public double radius() {
+        return radius;
+    }
+
     @Override
     public String toString() {
         return "Waypoint{" +
                "name='" + name + '\'' +
                ", lat=" + lat +
                ", lon=" + lon +
+               ", altitude=" + altitude +
+               ", radius=" + radius +
                '}';
     }
 }
