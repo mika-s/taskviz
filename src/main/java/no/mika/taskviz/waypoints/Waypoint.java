@@ -1,4 +1,4 @@
-package no.mika.taskviz;
+package no.mika.taskviz.waypoints;
 
 import static java.util.Objects.requireNonNull;
 
@@ -10,7 +10,7 @@ public class Waypoint {
     public final double altitude;
     public final double radius;
 
-    public Waypoint(final String name, final LatLonAltRadius latLonAltRadius) {
+    Waypoint(final String name, final LatLonAltRadius latLonAltRadius) {
         this.name = requireNonNull(name);
         requireNonNull(latLonAltRadius);
         this.lat = latLonAltRadius.lat();

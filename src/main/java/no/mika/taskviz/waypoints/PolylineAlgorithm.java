@@ -1,4 +1,4 @@
-package no.mika.taskviz;
+package no.mika.taskviz.waypoints;
 
 import no.mika.taskviz.util.Tuple2;
 
@@ -8,9 +8,9 @@ import java.util.List;
 import static no.mika.taskviz.util.Tuple.tuple;
 
 /// [Description](https://developers.google.com/maps/documentation/utilities/polylinealgorithm)
-public class PolylineAlgorithm {
+class PolylineAlgorithm {
 
-    public static List<LatLonAltRadius> decodeToDecimalDegrees(final String encoded) {
+    static List<LatLonAltRadius> decodeToDecimalDegrees(final String encoded) {
         final int len = encoded.length();
         final List<LatLonAltRadius> path = new ArrayList<>();
         int index = 0;

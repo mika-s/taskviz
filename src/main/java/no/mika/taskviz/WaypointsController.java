@@ -1,10 +1,11 @@
 package no.mika.taskviz;
 
 import com.google.zxing.NotFoundException;
+import no.mika.taskviz.qr.QrCodeReader;
+import no.mika.taskviz.waypoints.Waypoint;
+import no.mika.taskviz.waypoints.WaypointParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,13 +19,6 @@ import java.util.List;
 public class WaypointsController {
 
     private static final Logger log = LoggerFactory.getLogger(WaypointsController.class);
-
-    @PostMapping(path = "/astext")
-    public List<Waypoint> asText(@ModelAttribute("data") final String data, final Model model) {
-        return WaypointParser
-                .parse(data)
-                .waypoints();
-    }
 
     @PostMapping(path = "/asimage")
     public List<Waypoint> asImage() {

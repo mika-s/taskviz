@@ -1,23 +1,23 @@
-package no.mika.taskviz;
+package no.mika.taskviz.waypoints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class TaskDefinitionFormatV2 {
+class TaskDefinitionFormatV2 {
 
     public String taskType;
 
     public int version;
 
     @JsonProperty("t")
-    public List<Turnpoint> turnpoints;
+    public List<TurnpointV2> turnpoints;
 
     @JsonProperty("s")
-    public StartType startType;
+    public StartTypeV2 startType;
 
     @JsonProperty(value = "g")
-    public GoalType goalType;
+    public GoalTypeV2 goalType;
 
     @JsonProperty("e")
     public int earthModel;
@@ -28,7 +28,7 @@ public class TaskDefinitionFormatV2 {
     @JsonProperty("tc")
     public String takeoffCloseTime;
 
-    public static class Turnpoint {
+    public static class TurnpointV2 {
         @JsonProperty(value = "z", required = true)
         public String coordinates;
 
@@ -42,7 +42,7 @@ public class TaskDefinitionFormatV2 {
         public int type;
     }
 
-    public static class StartType {
+    public static class StartTypeV2 {
         @JsonProperty(value = "g", required = true)
         public List<String> times;
 
@@ -53,7 +53,7 @@ public class TaskDefinitionFormatV2 {
         public int type;
     }
 
-    public static class GoalType {
+    public static class GoalTypeV2 {
         @JsonProperty("d")
         public String deadline;
 

@@ -1,4 +1,4 @@
-package no.mika.taskviz;
+package no.mika.taskviz.waypoints;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,26 +21,7 @@ public class WaypointParser {
         try {
             final TaskDefinitionFormatV2 taskDefinition = taskDefinition(cleanedForParsing);
 
-            final List<LatLonAltRadius> coordinates = PolylineAlgorithm.decodeToDecimalDegrees(
-                    taskDefinition.turnpoints
-                            .stream()
-                            .map(turnpoint -> turnpoint.coordinates)
-                            .collect(joining(""))
-            );
-
-            return WaypointParseResult.success(
-                    zipWithIndex(taskDefinition.turnpoints.stream())
-                            .map(
-                                    turnpointAndIndex -> turnpointAndIndex
-                                            .map((turnpoint, index) ->
-                                                    new Waypoint(
-                                                            turnpoint.name,
-                                                            coordinates.get(index)
-                                                    )
-                                            )
-                            )
-                            .toList()
-            );
+            return decodeCoordinates(taskDefinition);
         } catch (final JsonProcessingException e) {
             return WaypointParseResult.failure();
         }
@@ -52,6 +33,29 @@ public class WaypointParser {
                 .readValue(input, TaskDefinitionFormatV2.class);
     }
 
+    private static WaypointParseResult decodeCoordinates(final TaskDefinitionFormatV2 taskDefinition) {
+        final List<LatLonAltRadius> coordinates = PolylineAlgorithm.decodeToDecimalDegrees(
+                taskDefinition.turnpoints
+                        .stream()
+                        .map(turnpoint -> turnpoint.coordinates)
+                        .collect(joining(""))
+        );
+
+        return WaypointParseResult.success(
+                zipWithIndex(taskDefinition.turnpoints.stream())
+                        .map(
+                                turnpointAndIndex -> turnpointAndIndex
+                                        .map((turnpoint, index) ->
+                                                new Waypoint(
+                                                        turnpoint.name,
+                                                        coordinates.get(index)
+                                                )
+                                        )
+                        )
+                        .toList()
+        );
+    }
+
     public static class WaypointParseResult {
         private final boolean wasParsedOk;
         private final List<Waypoint> waypoints;
@@ -61,14 +65,14 @@ public class WaypointParser {
             this.waypoints = waypoints;
         }
 
-        public static WaypointParseResult failure() {
+        static WaypointParseResult failure() {
             return new WaypointParseResult(
                     false,
                     List.of()
             );
         }
 
-        public static WaypointParseResult success(final List<Waypoint> waypoints) {
+        static WaypointParseResult success(final List<Waypoint> waypoints) {
             return new WaypointParseResult(
                     true,
                     waypoints

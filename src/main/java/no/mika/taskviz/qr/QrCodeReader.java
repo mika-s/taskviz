@@ -1,4 +1,4 @@
-package no.mika.taskviz;
+package no.mika.taskviz.qr;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.MultiFormatReader;
