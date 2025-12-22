@@ -11,11 +11,16 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class QrCodeReader {
 
     public static String fromFile(final String filePath) throws IOException, NotFoundException {
-        final BufferedImage bufferedImage = ImageIO.read(new FileInputStream(filePath));
+        return fromInputStream(new FileInputStream(filePath));
+    }
+
+    public static String fromInputStream(final InputStream inputStream) throws IOException, NotFoundException {
+        final BufferedImage bufferedImage = ImageIO.read(inputStream);
         final BufferedImageLuminanceSource source = new BufferedImageLuminanceSource(bufferedImage);
         final BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
         final Result result = new MultiFormatReader().decode(bitmap);

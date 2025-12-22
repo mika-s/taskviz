@@ -25,9 +25,15 @@
     <form hx-post="waypoints/asimage"
           hx-target="#testdiv"
           hx-swap="innerHTML"
-          hx-on::after-request="addWaypoints(event.detail.xhr)">
+          hx-on::after-request="addWaypoints(event.detail.xhr)"
+          enctype="multipart/form-data">
 
-        <button type="submit" class="btn btn-primary">Upload</button>
+        <div class="mb-3">
+            <label for="imageFile" class="form-label">Image file</label>
+            <input class="form-control" type="file" id="imageFile" name="imageFile" accept="image/png">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload image</button>
     </form>
 
     <div id="testdiv"></div>
