@@ -25,24 +25,24 @@ public class WaypointsController {
     @PostMapping(path = "/asimage")
     public List<Waypoint> asImage(@RequestParam("imageFile") final MultipartFile file) {
         if (file.isEmpty()) {
-            log.trace("Submitted empty file: {}", file.getName());
+            log.trace("Submitted empty file: {}", file.getOriginalFilename());
             return List.of();
         }
 
         try {
             final String decodedText = QrCodeReader.fromInputStream(file.getInputStream());
-            log.trace("Decoded QR code successfully from file: {}", file.getName());
+            log.trace("Decoded QR code successfully from file: {}", file.getOriginalFilename());
             return WaypointParser
                     .parse(decodedText)
                     .waypoints();
         } catch (final FileNotFoundException e) {
-            log.error("Unable to find the image file: {}", file.getName());
+            log.error("Unable to find the image file: {}", file.getOriginalFilename());
             return List.of();
         } catch (final IOException e) {
-            log.error("Unable to read the image file: {}", file.getName());
+            log.error("Unable to read the image file: {}", file.getOriginalFilename());
             return List.of();
         } catch (final NotFoundException e) {
-            log.error("Unable to find an image in the file: {}", file.getName());
+            log.error("Unable to find an QR code in the image: {}", file.getOriginalFilename());
             return List.of();
         }
     }
