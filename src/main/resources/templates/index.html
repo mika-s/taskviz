@@ -42,34 +42,20 @@
         <div class="col-2"></div>
 
         <div class="col-5">
-            <form hx-post="waypoints/asimage"
-                  hx-target="#coordinates"
-                  hx-swap="innerHTML"
-                  hx-on::after-request="addWaypoints(event.detail.xhr)"
-                  enctype="multipart/form-data">
-
-                <div class="mb-3">
-                    <label for="camera" class="form-label">Camera</label>
-                    <input id="camera" name="imageFile" class="form-control" type="file" accept="image/*"
-                           capture="camera"/>
+            <div id="error" class="row" style="visibility: hidden">
+                <div class="col">
+                    <div id="errorText" class="alert alert-danger" role="alert">
+                    </div>
                 </div>
-
-                <button type="submit" class="btn btn-primary">Upload image from camera</button>
-            </form>
+            </div>
         </div>
     </div>
 
     <div class="row">
         <div id="coordinates" class="col" hidden="until-found"></div>
     </div>
-    <div id="error" class="row" style="visibility: hidden">
-        <div class="col">
-            <div id="errorText" class="alert alert-danger" role="alert">
-            </div>
-        </div>
-    </div>
 
-    <div class="row py-2" style="height: 75vh;">
+    <div class="row py-2" style="height: 83vh;">
         <div class="col" id="map" style="height: 100%; width: 100%;"></div>
     </div>
 </div>
