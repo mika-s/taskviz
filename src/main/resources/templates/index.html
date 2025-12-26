@@ -23,31 +23,9 @@
     <div th:replace="~{menu :: menu}"></div>
 
     <div class="row py-2">
-        <div class="col-5">
-            <form hx-post="waypoints/asimage"
-                  hx-target="#coordinates"
-                  hx-swap="innerHTML"
-                  hx-on::after-request="addWaypoints(event.detail.xhr)"
-                  enctype="multipart/form-data">
 
-                <div class="mb-3">
-                    <label for="imageFile" class="form-label">Image file</label>
-                    <input id="imageFile" name="imageFile" class="form-control" type="file" accept="image/png">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Upload image</button>
-            </form>
-        </div>
-
-        <div class="col-2"></div>
-
-        <div class="col-5">
-            <div id="error" class="row" style="visibility: hidden">
-                <div class="col">
-                    <div id="errorText" class="alert alert-danger" role="alert">
-                    </div>
-                </div>
-            </div>
+        <div class="col-12">
+            <div id="reader"></div>
         </div>
     </div>
 
@@ -55,7 +33,7 @@
         <div id="coordinates" class="col" hidden="until-found"></div>
     </div>
 
-    <div class="row py-2" style="height: 83vh;">
+    <div class="row py-2" style="height: 70vh;">
         <div class="col" id="map" style="height: 100%; width: 100%;"></div>
     </div>
 </div>
@@ -67,7 +45,19 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
 <script>
+    const formatsToSupport = [
+        Html5QrcodeSupportedFormats.QR_CODE
+    ];
+    const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+        fps: 10,
+        qrbox: 250,
+        formatsToSupport: formatsToSupport
+    });
+    html5QrcodeScanner.render(onScanSuccess);
+
     const map = L.map('map').setView([51.505, -0.09], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -78,37 +68,26 @@
 
     const markers = [];
 
-    function setError(errorText) {
-        console.log(errorText);
-        document.getElementById('errorText').innerText = errorText;
-        document.getElementById('error').style.visibility = 'visible';
+    async function onScanSuccess(decodedText, decodedResult) {
+        const waypoints = await getWaypointsFromQrCode("waypoints/astext", {decodedQr: decodedText});
+        addWaypoints(waypoints);
     }
 
-    function clearError() {
-        document.getElementById('error').style.visibility = 'hidden';
+    async function getWaypointsFromQrCode(url, body) {
+        let response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)
+        });
+        return await response.json();
     }
 
-    function addWaypoints(xhr) {
-        if (xhr.status === 400) {
-            setError("Bad input. Was it an image containing a QR code?");
-        } else if (xhr.status === 413) {
-            setError("The image was too big.");
-        } else if (xhr.status === 429) {
-            setError("Too many requests. Try again later.")
-        }
-
-        if (xhr.status !== 200) {
-            console.log("Unexpected error: " + xhr.status);
-            return;
-        }
-
-        clearError();
-
+    function addWaypoints(waypoints) {
         for (let i = 0; i < markers.length; i++) {
             map.removeLayer(markers[i]);
         }
-
-        const waypoints = JSON.parse(xhr.response);
 
         const latlons = [];
         for (const wpt of waypoints) {
