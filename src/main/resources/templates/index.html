@@ -32,7 +32,7 @@
 
                 <div class="mb-3">
                     <label for="imageFile" class="form-label">Image file</label>
-                    <input class="form-control" type="file" id="imageFile" name="imageFile" accept="image/png">
+                    <input id="imageFile" name="imageFile" class="form-control" type="file" accept="image/png">
                 </div>
 
                 <button type="submit" class="btn btn-primary">Upload image</button>
@@ -50,7 +50,8 @@
 
                 <div class="mb-3">
                     <label for="camera" class="form-label">Camera</label>
-                    <input class="form-control" type="file" id="camera" name="imageFile" accept="image/*" capture="camera"/>
+                    <input id="camera" name="imageFile" class="form-control" type="file" accept="image/*"
+                           capture="camera"/>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Upload image from camera</button>
@@ -59,10 +60,16 @@
     </div>
 
     <div class="row">
-        <div class="col" hidden="until-found" id="coordinates"></div>
+        <div id="coordinates" class="col" hidden="until-found"></div>
+    </div>
+    <div id="error" class="row" style="visibility: hidden">
+        <div class="col">
+            <div id="errorText" class="alert alert-danger" role="alert">
+            </div>
+        </div>
     </div>
 
-    <div class="row py-2" style="height: 84vh;">
+    <div class="row py-2" style="height: 75vh;">
         <div class="col" id="map" style="height: 100%; width: 100%;"></div>
     </div>
 </div>
@@ -85,10 +92,31 @@
 
     const markers = [];
 
+    function setError(errorText) {
+        console.log(errorText);
+        document.getElementById('errorText').innerText = errorText;
+        document.getElementById('error').style.visibility = 'visible';
+    }
+
+    function clearError() {
+        document.getElementById('error').style.visibility = 'hidden';
+    }
+
     function addWaypoints(xhr) {
+        if (xhr.status === 400) {
+            setError("Bad input. Was it an image containing a QR code?");
+        } else if (xhr.status === 413) {
+            setError("The image was too big.");
+        } else if (xhr.status === 429) {
+            setError("Too many requests. Try again later.")
+        }
+
         if (xhr.status !== 200) {
+            console.log("Unexpected error: " + xhr.status);
             return;
         }
+
+        clearError();
 
         for (let i = 0; i < markers.length; i++) {
             map.removeLayer(markers[i]);
