@@ -1,4 +1,4 @@
 # Task visualizer
 
-A Spring Boot application that is used to visualize XCTrack tasks on a map.
+A web application that is used to visualize XCTrack tasks on a map.
 QR codes are used as input.
